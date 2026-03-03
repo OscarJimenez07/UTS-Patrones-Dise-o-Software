@@ -1,0 +1,29 @@
+@startuml Singleton
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam style strictuml
+
+title Patrón Singleton — SistemaAutenticacion
+
+class SistemaAutenticacion {
+    - {static} instancia : SistemaAutenticacion
+    - usuarios : Map<String, String>
+    - roles : Map<String, String>
+    - SistemaAutenticacion()
+    + {static} getInstance() : SistemaAutenticacion
+    + registrarUsuario(usuario, contrasena, rol) : void
+    + login(usuario, contrasena) : boolean
+    + obtenerRol(usuario) : String
+    + abrirDashboard(usuario) : Dashboard
+}
+
+note right of SistemaAutenticacion
+  <b>Singleton</b>
+  El constructor es <b>privado</b>.
+  Solo se accede con getInstance().
+  Si la instancia no existe, se crea.
+  Si ya existe, se reutiliza.
+end note
+
+@enduml

@@ -1,3 +1,7 @@
+## Integrantes:
+- Oscar Javier Jimenez Celis    
+- Anderson David Suarez Bernal
+
 # Motor de Juegos Multijugador
 
 ## Descripción General

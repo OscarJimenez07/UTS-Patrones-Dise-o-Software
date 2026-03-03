@@ -1,0 +1,62 @@
+@startuml FactoryMethod
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam style strictuml
+
+title Patrón Factory Method — Dashboard y DashboardFactory
+
+abstract class Dashboard {
+    # nombreUsuario : String
+    # rol : String
+    # Dashboard(nombreUsuario, rol)
+    + {abstract} mostrar() : void
+    + getNombreUsuario() : String
+    + getRol() : String
+}
+
+class DashboardJugador {
+    + DashboardJugador(nombreUsuario)
+    + mostrar() : void
+}
+
+class DashboardAdmin {
+    + DashboardAdmin(nombreUsuario)
+    + mostrar() : void
+}
+
+class DashboardModerador {
+    + DashboardModerador(nombreUsuario)
+    + mostrar() : void
+}
+
+abstract class DashboardFactory {
+    + {abstract} crearDashboard(nombreUsuario) : Dashboard
+    + prepararDashboard(nombreUsuario) : Dashboard
+}
+
+class FactoryDashboardJugador {
+    + crearDashboard(nombreUsuario) : Dashboard
+}
+
+class FactoryDashboardAdmin {
+    + crearDashboard(nombreUsuario) : Dashboard
+}
+
+class FactoryDashboardModerador {
+    + crearDashboard(nombreUsuario) : Dashboard
+}
+
+Dashboard <|-- DashboardJugador
+Dashboard <|-- DashboardAdmin
+Dashboard <|-- DashboardModerador
+
+DashboardFactory <|-- FactoryDashboardJugador
+DashboardFactory <|-- FactoryDashboardAdmin
+DashboardFactory <|-- FactoryDashboardModerador
+
+FactoryDashboardJugador ..> DashboardJugador : <<creates>>
+FactoryDashboardAdmin ..> DashboardAdmin : <<creates>>
+FactoryDashboardModerador ..> DashboardModerador : <<creates>>
+
+@enduml

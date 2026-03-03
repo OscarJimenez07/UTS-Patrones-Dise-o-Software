@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(winget search:*)",
+      "Bash(winget install:*)",
+      "Bash(rm:*)",
+      "Bash(javac:*)",
+      "Bash(java:*)"
+    ]
+  }
+}

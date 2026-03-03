@@ -1,5 +1,8 @@
 # Patrón Factory Method — Dashboard y DashboardFactory
 
+## Diagrama UML
+![FactoryMethod](https://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/OscarJimenez07/UTS-Patrones-Dise-o-Software/master/TS3/FactoryMethod.puml)
+
 ## ¿Qué es?
 
 El patrón Factory Method define una interfaz para crear objetos, pero deja que las **subclases** decidan qué clase concreta instanciar. Así el código cliente trabaja con la clase abstracta sin conocer los tipos concretos.

@@ -1,5 +1,8 @@
 # Patrón Singleton — SistemaAutenticacion
 
+## Diagrama UML
+![Singleton](https://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/OscarJimenez07/UTS-Patrones-Dise-o-Software/master/TS3/Singleton.puml)
+
 ## ¿Qué es?
 
 El patrón Singleton garantiza que una clase tenga **una única instancia** en toda la aplicación y proporciona un punto de acceso global a ella.

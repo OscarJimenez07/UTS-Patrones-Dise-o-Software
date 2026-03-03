@@ -92,16 +92,6 @@ Este proyecto consiste en el diseño y desarrollo de un **Motor de Juegos Multij
 
 ---
 
-## Diagramas UML
-
-### Patrón Singleton — SistemaAutenticacion
-![Singleton](https://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/OscarJimenez07/UTS-Patrones-Dise-o-Software/master/TS3/Singleton.puml)
-
-### Patrón Factory Method — Dashboard y DashboardFactory
-![FactoryMethod](https://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/OscarJimenez07/UTS-Patrones-Dise-o-Software/master/TS3/FactoryMethod.puml)
-
----
-
 ## Tecnologías Sugeridas
 
 | Componente | Tecnología |

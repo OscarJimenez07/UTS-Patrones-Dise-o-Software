@@ -27,3 +27,11 @@ note right of SistemaAutenticacion
 end note
 
 @enduml
+
+---
+## Diagramas UML
+
+### Patrón Singleton — SistemaAutenticacion
+![Singleton](https://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/OscarJimenez07/UTS-Patrones-Dise-o-Software/master/TS3/Singleton.puml)
+
+---

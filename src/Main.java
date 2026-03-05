@@ -1,7 +1,7 @@
 /**
  * Clase principal de demostración.
  *
- * Muestra cómo funcionan los dos patrones de diseño:
+ * Muestra cómo funcionan los patrones de diseño:
  *
  * 1. SINGLETON (SistemaAutenticacion): Solo existe UNA instancia
  *    del sistema de login. Aunque pidamos getInstance() varias veces,
@@ -10,6 +10,10 @@
  * 2. FACTORY METHOD (DashboardFactory): Después del login, se crea
  *    el dashboard correcto según el rol del usuario, sin que este
  *    código necesite saber los detalles de cada dashboard.
+ *
+ * 3. ABSTRACT FACTORY (TiendaItemFactory): La tienda crea familias
+ *    completas de ítems (Skin + Potenciador + Recompensa) según el
+ *    nivel del jugador (Estándar o Premium), sin conocer las clases concretas.
  */
 public class Main {
 
@@ -62,6 +66,27 @@ public class Main {
         if (!auth1.login("hacker", "9999")) {
             System.out.println("   Acceso denegado. No se muestra dashboard.");
         }
+
+        // =============================================
+        // DEMOSTRACIÓN 3: ABSTRACT FACTORY
+        // =============================================
+        System.out.println("\n\n--- PATRON ABSTRACT FACTORY ---");
+        System.out.println("Creando tiendas con diferentes niveles de items...");
+
+        // Tienda Estándar: crea ítems obtenibles con moneda del juego
+        TiendaItemFactory factoryEstandar = new TiendaEstandarFactory();
+        Tienda tiendaEstandar = new Tienda(factoryEstandar, "Estándar");
+        tiendaEstandar.mostrarOfertaDelDia();
+
+        // Tienda Premium: crea ítems comprables con moneda real
+        TiendaItemFactory factoryPremium = new TiendaPremiumFactory();
+        Tienda tiendaPremium = new Tienda(factoryPremium, "Premium");
+        tiendaPremium.mostrarOfertaDelDia();
+
+        // Demostración: la Tienda no sabe qué tipo concreto usa
+        System.out.println("\n  La clase Tienda trabaja con la interfaz TiendaItemFactory.");
+        System.out.println("  No conoce SkinEstandar, SkinPremium, ni ninguna clase concreta.");
+        System.out.println("  Solo cambiando la fábrica, toda la familia de productos cambia.");
 
         System.out.println("\n============================================");
         System.out.println("   Demostracion finalizada exitosamente.");

@@ -1,0 +1,131 @@
+@startuml AbstractFactory
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam style strictuml
+
+title Patrón Abstract Factory — Tienda de Ítems por Nivel (Estándar / Premium)
+
+' ── Productos abstractos ──
+
+interface Skin {
+    + getNombre() : String
+    + getRareza() : String
+    + aplicar() : void
+}
+
+interface Potenciador {
+    + getNombre() : String
+    + getDuracion() : int
+    + activar() : void
+}
+
+interface Recompensa {
+    + getDescripcion() : String
+    + getMonedasOtorgadas() : int
+    + reclamar() : void
+}
+
+' ── Productos concretos Estándar ──
+
+class SkinEstandar {
+    - nombre : String
+    - rareza : String
+    + SkinEstandar(nombre)
+    + getNombre() : String
+    + getRareza() : String
+    + aplicar() : void
+}
+
+class PotenciadorEstandar {
+    - nombre : String
+    - duracion : int
+    + PotenciadorEstandar(nombre)
+    + getNombre() : String
+    + getDuracion() : int
+    + activar() : void
+}
+
+class RecompensaEstandar {
+    - descripcion : String
+    - monedasOtorgadas : int
+    + RecompensaEstandar(descripcion)
+    + getDescripcion() : String
+    + getMonedasOtorgadas() : int
+    + reclamar() : void
+}
+
+' ── Productos concretos Premium ──
+
+class SkinPremium {
+    - nombre : String
+    - rareza : String
+    + SkinPremium(nombre)
+    + getNombre() : String
+    + getRareza() : String
+    + aplicar() : void
+}
+
+class PotenciadorPremium {
+    - nombre : String
+    - duracion : int
+    + PotenciadorPremium(nombre)
+    + getNombre() : String
+    + getDuracion() : int
+    + activar() : void
+}
+
+class RecompensaPremium {
+    - descripcion : String
+    - monedasOtorgadas : int
+    + RecompensaPremium(descripcion)
+    + getDescripcion() : String
+    + getMonedasOtorgadas() : int
+    + reclamar() : void
+}
+
+' ── Abstract Factory ──
+
+interface TiendaItemFactory {
+    + crearSkin(nombre) : Skin
+    + crearPotenciador(nombre) : Potenciador
+    + crearRecompensa(descripcion) : Recompensa
+}
+
+class TiendaEstandarFactory {
+    + crearSkin(nombre) : Skin
+    + crearPotenciador(nombre) : Potenciador
+    + crearRecompensa(descripcion) : Recompensa
+}
+
+class TiendaPremiumFactory {
+    + crearSkin(nombre) : Skin
+    + crearPotenciador(nombre) : Potenciador
+    + crearRecompensa(descripcion) : Recompensa
+}
+
+' ── Relaciones de herencia ──
+
+Skin <|.. SkinEstandar
+Skin <|.. SkinPremium
+
+Potenciador <|.. PotenciadorEstandar
+Potenciador <|.. PotenciadorPremium
+
+Recompensa <|.. RecompensaEstandar
+Recompensa <|.. RecompensaPremium
+
+TiendaItemFactory <|.. TiendaEstandarFactory
+TiendaItemFactory <|.. TiendaPremiumFactory
+
+' ── Relaciones de creación ──
+
+TiendaEstandarFactory ..> SkinEstandar : <<creates>>
+TiendaEstandarFactory ..> PotenciadorEstandar : <<creates>>
+TiendaEstandarFactory ..> RecompensaEstandar : <<creates>>
+
+TiendaPremiumFactory ..> SkinPremium : <<creates>>
+TiendaPremiumFactory ..> PotenciadorPremium : <<creates>>
+TiendaPremiumFactory ..> RecompensaPremium : <<creates>>
+
+@enduml

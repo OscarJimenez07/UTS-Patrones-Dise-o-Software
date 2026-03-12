@@ -1,6 +1,0 @@
-# Archivos compilados de Java
-*.class
-
-# Carpeta de salida de compilación
-bin/
-out/

@@ -1,0 +1,83 @@
+@startuml Builder
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam style strictuml
+
+title Patrón Builder — Construcción de Personajes del Juego
+
+' ── Product ──
+
+class Personaje {
+    - nombre : String
+    - clase : String
+    - arma : String
+    - armadura : String
+    - habilidadEspecial : String
+    - vida : int
+    - ataque : int
+    - defensa : int
+    + setNombre(nombre) : void
+    + setClase(clase) : void
+    + setArma(arma) : void
+    + setArmadura(armadura) : void
+    + setHabilidadEspecial(habilidad) : void
+    + setVida(vida) : void
+    + setAtaque(ataque) : void
+    + setDefensa(defensa) : void
+    + mostrarInfo() : void
+}
+
+' ── Builder ──
+
+interface PersonajeBuilder {
+    + setNombre(nombre) : void
+    + construirEstadisticas() : void
+    + equiparArma() : void
+    + equiparArmadura() : void
+    + asignarHabilidad() : void
+    + getPersonaje() : Personaje
+}
+
+' ── Concrete Builders ──
+
+class PersonajeGuerreroBuilder {
+    - personaje : Personaje
+    + setNombre(nombre) : void
+    + construirEstadisticas() : void
+    + equiparArma() : void
+    + equiparArmadura() : void
+    + asignarHabilidad() : void
+    + getPersonaje() : Personaje
+}
+
+class PersonajeMagoBuilder {
+    - personaje : Personaje
+    + setNombre(nombre) : void
+    + construirEstadisticas() : void
+    + equiparArma() : void
+    + equiparArmadura() : void
+    + asignarHabilidad() : void
+    + getPersonaje() : Personaje
+}
+
+' ── Director ──
+
+class DirectorPersonaje {
+    - builder : PersonajeBuilder
+    + DirectorPersonaje(builder)
+    + construirPersonaje(nombre) : Personaje
+}
+
+' ── Relaciones de herencia ──
+
+PersonajeBuilder <|.. PersonajeGuerreroBuilder
+PersonajeBuilder <|.. PersonajeMagoBuilder
+
+' ── Relaciones de uso ──
+
+DirectorPersonaje o--> PersonajeBuilder : usa
+PersonajeGuerreroBuilder ..> Personaje : <<creates>>
+PersonajeMagoBuilder ..> Personaje : <<creates>>
+
+@enduml

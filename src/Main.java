@@ -1,95 +1,346 @@
-/**
- * Clase principal de demostración.
- *
- * Muestra cómo funcionan los patrones de diseño:
- *
- * 1. SINGLETON (SistemaAutenticacion): Solo existe UNA instancia
- *    del sistema de login. Aunque pidamos getInstance() varias veces,
- *    siempre es el mismo objeto.
- *
- * 2. FACTORY METHOD (DashboardFactory): Después del login, se crea
- *    el dashboard correcto según el rol del usuario, sin que este
- *    código necesite saber los detalles de cada dashboard.
- *
- * 3. ABSTRACT FACTORY (TiendaItemFactory): La tienda crea familias
- *    completas de ítems (Skin + Potenciador + Recompensa) según el
- *    nivel del jugador (Estándar o Premium), sin conocer las clases concretas.
- */
+import java.util.Scanner;
+
 public class Main {
 
+    private static Scanner scanner = new Scanner(System.in);
+    private static SistemaAutenticacion auth = SistemaAutenticacion.getInstance();
+    private static String usuarioActual = null;
+
     public static void main(String[] args) {
+        boolean salir = false;
 
-        System.out.println("============================================");
-        System.out.println("   MOTOR DE JUEGOS MULTIJUGADOR");
-        System.out.println("   Sistema de Login y Dashboard");
-        System.out.println("============================================");
+        while (!salir) {
+            System.out.println("\n============================================");
+            System.out.println("   MOTOR DE JUEGOS MULTIJUGADOR");
+            System.out.println("============================================");
+            System.out.println("  1. Iniciar sesion");
+            System.out.println("  2. Registrarse");
+            System.out.println("  0. Salir");
+            System.out.println("============================================");
+            System.out.print("  Opcion: ");
 
-        // =============================================
-        // DEMOSTRACIÓN 1: PATRÓN SINGLETON
-        // =============================================
-        System.out.println("\n--- PATRON SINGLETON ---");
-        System.out.println("Obteniendo dos referencias al sistema de autenticacion...\n");
+            String opcion = scanner.nextLine().trim();
 
-        SistemaAutenticacion auth1 = SistemaAutenticacion.getInstance();
-        SistemaAutenticacion auth2 = SistemaAutenticacion.getInstance();
-
-        // Verificamos que ambas referencias son el MISMO objeto
-        System.out.println("\nauth1 == auth2? " + (auth1 == auth2));
-        System.out.println("(Si es true, el Singleton funciona correctamente)");
-
-        // =============================================
-        // DEMOSTRACIÓN 2: LOGIN + FACTORY METHOD
-        // =============================================
-        System.out.println("\n\n--- PATRON FACTORY METHOD ---");
-        System.out.println("Haciendo login con distintos usuarios...");
-
-        // Login como Jugador
-        System.out.println("\n>> Intento de login: carlos / 1234");
-        if (auth1.login("carlos", "1234")) {
-            auth1.abrirDashboard("carlos");
+            switch (opcion) {
+                case "1":
+                    iniciarSesion();
+                    break;
+                case "2":
+                    registrarse();
+                    break;
+                case "0":
+                    salir = true;
+                    System.out.println("\n  Hasta pronto!");
+                    break;
+                default:
+                    System.out.println("  Opcion no valida.");
+            }
         }
 
-        // Login como Administrador
-        System.out.println("\n>> Intento de login: admin / admin123");
-        if (auth1.login("admin", "admin123")) {
-            auth1.abrirDashboard("admin");
+        scanner.close();
+    }
+
+    private static void iniciarSesion() {
+        System.out.print("\n  Usuario: ");
+        String usuario = scanner.nextLine().trim();
+        System.out.print("  Contrasena: ");
+        String contrasena = scanner.nextLine().trim();
+
+        if (auth.login(usuario, contrasena)) {
+            usuarioActual = usuario;
+            String rol = auth.obtenerRol(usuario);
+
+            switch (rol.toLowerCase()) {
+                case "jugador":
+                    menuJugador();
+                    break;
+                case "administrador":
+                    menuAdmin();
+                    break;
+                case "moderador":
+                    menuModerador();
+                    break;
+            }
+        }
+    }
+
+    private static void registrarse() {
+        System.out.print("\n  Nuevo usuario: ");
+        String usuario = scanner.nextLine().trim();
+        System.out.print("  Contrasena: ");
+        String contrasena = scanner.nextLine().trim();
+        System.out.println("\n  Seleccione su rol:");
+        System.out.println("  1. Jugador");
+        System.out.println("  2. Moderador");
+        System.out.println("  3. Administrador");
+        System.out.print("  Opcion: ");
+        String opRol = scanner.nextLine().trim();
+
+        String rol;
+        switch (opRol) {
+            case "1": rol = "jugador"; break;
+            case "2": rol = "moderador"; break;
+            case "3": rol = "administrador"; break;
+            default:
+                System.out.println("  Rol no valido. Registro cancelado.");
+                return;
         }
 
-        // Login como Moderador
-        System.out.println("\n>> Intento de login: maria / abcd");
-        if (auth1.login("maria", "abcd")) {
-            auth1.abrirDashboard("maria");
+        auth.registrarUsuario(usuario, contrasena, rol);
+        System.out.println("  Usuario '" + usuario + "' registrado como " + rol + "!");
+    }
+
+    // ========================================================
+    //  MENU JUGADOR (usa Factory Method para el dashboard)
+    // ========================================================
+    private static void menuJugador() {
+        Dashboard dashboard = auth.abrirDashboard(usuarioActual);
+        boolean enSesion = true;
+
+        while (enSesion) {
+            System.out.print("\n  Opcion: ");
+            String op = scanner.nextLine().trim();
+
+            switch (op) {
+                case "1":
+                    buscarPartida();
+                    break;
+                case "2":
+                    verEstadisticas();
+                    break;
+                case "3":
+                    menuTienda();
+                    break;
+                case "4":
+                    verRanking();
+                    break;
+                case "5":
+                    enSesion = false;
+                    usuarioActual = null;
+                    System.out.println("\n  Sesion cerrada.");
+                    break;
+                default:
+                    System.out.println("  Opcion no valida.");
+            }
+
+            if (enSesion) {
+                dashboard.mostrar();
+            }
+        }
+    }
+
+    // ========================================================
+    //  MENU ADMIN (usa Factory Method para el dashboard)
+    // ========================================================
+    private static void menuAdmin() {
+        Dashboard dashboard = auth.abrirDashboard(usuarioActual);
+        boolean enSesion = true;
+
+        while (enSesion) {
+            System.out.print("\n  Opcion: ");
+            String op = scanner.nextLine().trim();
+
+            switch (op) {
+                case "1":
+                    System.out.println("\n  [Admin] Panel de gestion de usuarios");
+                    System.out.println("  Usuarios registrados en el sistema.");
+                    System.out.println("  (Modulo en desarrollo - se ampliara con nuevos patrones)");
+                    break;
+                case "2":
+                    System.out.println("\n  [Admin] Configuracion del servidor");
+                    System.out.println("  Servidores activos: 3 | Jugadores conectados: 127");
+                    System.out.println("  (Modulo en desarrollo - se ampliara con nuevos patrones)");
+                    break;
+                case "3":
+                    System.out.println("\n  [Admin] Reportes del sistema");
+                    System.out.println("  Partidas hoy: 45 | Usuarios nuevos: 12 | Incidentes: 0");
+                    break;
+                case "4":
+                    System.out.println("\n  [Admin] Partidas activas");
+                    System.out.println("  No hay partidas en curso actualmente.");
+                    System.out.println("  (Modulo en desarrollo - se ampliara con nuevos patrones)");
+                    break;
+                case "5":
+                    enSesion = false;
+                    usuarioActual = null;
+                    System.out.println("\n  Sesion cerrada.");
+                    break;
+                default:
+                    System.out.println("  Opcion no valida.");
+            }
+
+            if (enSesion) {
+                dashboard.mostrar();
+            }
+        }
+    }
+
+    // ========================================================
+    //  MENU MODERADOR (usa Factory Method para el dashboard)
+    // ========================================================
+    private static void menuModerador() {
+        Dashboard dashboard = auth.abrirDashboard(usuarioActual);
+        boolean enSesion = true;
+
+        while (enSesion) {
+            System.out.print("\n  Opcion: ");
+            String op = scanner.nextLine().trim();
+
+            switch (op) {
+                case "1":
+                    System.out.println("\n  [Mod] Reportes de jugadores");
+                    System.out.println("  No hay reportes pendientes.");
+                    break;
+                case "2":
+                    System.out.print("\n  [Mod] Nombre del jugador a sancionar: ");
+                    String jugador = scanner.nextLine().trim();
+                    System.out.println("  Sancion aplicada a '" + jugador + "' (advertencia).");
+                    break;
+                case "3":
+                    System.out.println("\n  [Mod] Chat global:");
+                    System.out.println("  oscar: Alguien para una partida?");
+                    System.out.println("  guest42: Hola a todos!");
+                    System.out.println("  (Modulo en desarrollo - se ampliara con nuevos patrones)");
+                    break;
+                case "4":
+                    System.out.println("\n  [Mod] Historial de sanciones");
+                    System.out.println("  No hay sanciones registradas.");
+                    break;
+                case "5":
+                    enSesion = false;
+                    usuarioActual = null;
+                    System.out.println("\n  Sesion cerrada.");
+                    break;
+                default:
+                    System.out.println("  Opcion no valida.");
+            }
+
+            if (enSesion) {
+                dashboard.mostrar();
+            }
+        }
+    }
+
+    // ========================================================
+    //  CREAR PERSONAJE (usa patron Builder)
+    // ========================================================
+    private static void crearPersonaje() {
+        System.out.println("\n  ═══ CREACION DE PERSONAJE ═══");
+        System.out.print("  Nombre de tu personaje: ");
+        String nombre = scanner.nextLine().trim();
+        System.out.println("\n  Elige la clase:");
+        System.out.println("  1. Guerrero (alta vida y defensa)");
+        System.out.println("  2. Mago (alto ataque magico)");
+        System.out.print("  Opcion: ");
+        String clase = scanner.nextLine().trim();
+
+        PersonajeBuilder builder;
+
+        switch (clase) {
+            case "1":
+                builder = new PersonajeGuerreroBuilder();
+                break;
+            case "2":
+                builder = new PersonajeMagoBuilder();
+                break;
+            default:
+                System.out.println("  Clase no valida. Creacion cancelada.");
+                return;
         }
 
-        // Login fallido (para demostrar validación)
-        System.out.println("\n>> Intento de login: hacker / 9999");
-        if (!auth1.login("hacker", "9999")) {
-            System.out.println("   Acceso denegado. No se muestra dashboard.");
+        DirectorPersonaje director = new DirectorPersonaje(builder);
+        Personaje personaje = director.construirPersonaje(nombre);
+
+        System.out.println("\n  Personaje creado exitosamente!\n");
+        personaje.mostrarInfo();
+    }
+
+    // ========================================================
+    //  TIENDA (usa patron Abstract Factory)
+    // ========================================================
+    private static void menuTienda() {
+        boolean enTienda = true;
+
+        while (enTienda) {
+            System.out.println("\n  ╔══════════════════════════════════════╗");
+            System.out.println("  ║         TIENDA DE OBJETOS            ║");
+            System.out.println("  ╠══════════════════════════════════════╣");
+            System.out.println("  ║  1. Ver items Estandar (monedas)     ║");
+            System.out.println("  ║  2. Ver items Premium  (diamantes)   ║");
+            System.out.println("  ║  0. Volver al menu                   ║");
+            System.out.println("  ╚══════════════════════════════════════╝");
+            System.out.print("  Opcion: ");
+            String op = scanner.nextLine().trim();
+
+            switch (op) {
+                case "1":
+                    Tienda tiendaEstandar = new Tienda(new TiendaEstandarFactory(), "Estándar");
+                    tiendaEstandar.mostrarOfertaDelDia();
+                    break;
+                case "2":
+                    Tienda tiendaPremium = new Tienda(new TiendaPremiumFactory(), "Premium");
+                    tiendaPremium.mostrarOfertaDelDia();
+                    break;
+                case "0":
+                    enTienda = false;
+                    break;
+                default:
+                    System.out.println("  Opcion no valida.");
+            }
+        }
+    }
+
+    // ========================================================
+    //  BUSCAR PARTIDA (simulado, se ampliara con Strategy)
+    // ========================================================
+    private static void buscarPartida() {
+        System.out.println("\n  ═══ BUSCAR PARTIDA ═══");
+        System.out.println("  Selecciona modo de juego:");
+        System.out.println("  1. 1 vs 1");
+        System.out.println("  2. Equipos (3v3)");
+        System.out.println("  3. Battle Royale");
+        System.out.print("  Opcion: ");
+        String modo = scanner.nextLine().trim();
+
+        String nombreModo;
+        switch (modo) {
+            case "1": nombreModo = "1 vs 1"; break;
+            case "2": nombreModo = "Equipos 3v3"; break;
+            case "3": nombreModo = "Battle Royale"; break;
+            default:
+                System.out.println("  Modo no valido.");
+                return;
         }
 
-        // =============================================
-        // DEMOSTRACIÓN 3: ABSTRACT FACTORY
-        // =============================================
-        System.out.println("\n\n--- PATRON ABSTRACT FACTORY ---");
-        System.out.println("Creando tiendas con diferentes niveles de items...");
+        System.out.println("\n  Buscando partida de " + nombreModo + "...");
+        System.out.println("  Jugadores encontrados! Entrando a la partida...");
+        System.out.println("  (Modulo en desarrollo - se ampliara con nuevos patrones)");
+    }
 
-        // Tienda Estándar: crea ítems obtenibles con moneda del juego
-        TiendaItemFactory factoryEstandar = new TiendaEstandarFactory();
-        Tienda tiendaEstandar = new Tienda(factoryEstandar, "Estándar");
-        tiendaEstandar.mostrarOfertaDelDia();
+    // ========================================================
+    //  ESTADISTICAS Y RANKING (simulado)
+    // ========================================================
+    private static void verEstadisticas() {
+        System.out.println("\n  ═══ ESTADISTICAS DE " + usuarioActual.toUpperCase() + " ═══");
+        System.out.println("  Partidas jugadas:  24");
+        System.out.println("  Victorias:         15");
+        System.out.println("  Derrotas:           9");
+        System.out.println("  Win rate:          62%");
+        System.out.println("  Puntuacion Elo:  1250");
 
-        // Tienda Premium: crea ítems comprables con moneda real
-        TiendaItemFactory factoryPremium = new TiendaPremiumFactory();
-        Tienda tiendaPremium = new Tienda(factoryPremium, "Premium");
-        tiendaPremium.mostrarOfertaDelDia();
+        System.out.println("\n  Deseas crear un nuevo personaje? (s/n): ");
+        String resp = scanner.nextLine().trim();
+        if (resp.equalsIgnoreCase("s")) {
+            crearPersonaje();
+        }
+    }
 
-        // Demostración: la Tienda no sabe qué tipo concreto usa
-        System.out.println("\n  La clase Tienda trabaja con la interfaz TiendaItemFactory.");
-        System.out.println("  No conoce SkinEstandar, SkinPremium, ni ninguna clase concreta.");
-        System.out.println("  Solo cambiando la fábrica, toda la familia de productos cambia.");
-
-        System.out.println("\n============================================");
-        System.out.println("   Demostracion finalizada exitosamente.");
-        System.out.println("============================================");
+    private static void verRanking() {
+        System.out.println("\n  ═══ RANKING GLOBAL ═══");
+        System.out.println("  #1  ProGamer99     - 2150 Elo");
+        System.out.println("  #2  ShadowKnight   - 1980 Elo");
+        System.out.println("  #3  DragonSlayer    - 1875 Elo");
+        System.out.println("  #4  " + usuarioActual + "          - 1250 Elo");
+        System.out.println("  ...");
     }
 }

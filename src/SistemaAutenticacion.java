@@ -32,10 +32,9 @@ public class SistemaAutenticacion {
         this.usuarios = new HashMap<>();
         this.roles = new HashMap<>();
 
-        // Registramos algunos usuarios de prueba
-        registrarUsuario("carlos", "1234", "jugador");
-        registrarUsuario("admin", "admin123", "administrador");
-        registrarUsuario("maria", "abcd", "moderador");
+        // Usuarios registrados
+        registrarUsuario("oscar", "1234", "jugador");
+        registrarUsuario("anderson", "1234", "jugador");
 
         System.out.println("[Auth] Sistema de autenticacion iniciado.");
     }

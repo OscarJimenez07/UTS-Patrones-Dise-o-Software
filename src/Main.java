@@ -115,6 +115,9 @@ public class Main {
                     verRanking();
                     break;
                 case "5":
+                    menuCrearPartida();
+                    break;
+                case "6":
                     enSesion = false;
                     usuarioActual = null;
                     System.out.println("\n  Sesion cerrada.");
@@ -125,6 +128,111 @@ public class Main {
 
             if (enSesion) {
                 dashboard.mostrar();
+            }
+        }
+    }
+
+    // ========================================================
+    //  CREAR PARTIDA (usa patron Prototype)
+    // ========================================================
+    private static void menuCrearPartida() {
+        RegistroConfiguraciones registro = new RegistroConfiguraciones();
+        registro.registrar("Duelo", new ConfiguracionDuelo());
+        registro.registrar("Equipos", new ConfiguracionEquipos());
+        registro.registrar("BattleRoyale", new ConfiguracionBattleRoyale());
+
+        boolean enMenu = true;
+
+        while (enMenu) {
+            System.out.println("\n  ╔══════════════════════════════════════╗");
+            System.out.println("  ║      CREAR PARTIDA (Prototype)       ║");
+            System.out.println("  ╠══════════════════════════════════════╣");
+            System.out.println("  ║  1. Ver modos disponibles            ║");
+            System.out.println("  ║  2. Crear partida rapida             ║");
+            System.out.println("  ║  3. Crear partida personalizada      ║");
+            System.out.println("  ║  0. Volver al menu                   ║");
+            System.out.println("  ╚══════════════════════════════════════╝");
+            System.out.print("  Opcion: ");
+            String op = scanner.nextLine().trim();
+
+            switch (op) {
+                case "1":
+                    registro.listarConfiguraciones();
+                    break;
+                case "2":
+                    System.out.println("\n  Selecciona el modo:");
+                    System.out.println("  1. Duelo (1 vs 1)");
+                    System.out.println("  2. Equipos (3v3)");
+                    System.out.println("  3. Battle Royale");
+                    System.out.print("  Opcion: ");
+                    String modoRapido = scanner.nextLine().trim();
+
+                    String claveRapida;
+                    switch (modoRapido) {
+                        case "1": claveRapida = "Duelo"; break;
+                        case "2": claveRapida = "Equipos"; break;
+                        case "3": claveRapida = "BattleRoyale"; break;
+                        default:
+                            System.out.println("  Modo no valido.");
+                            continue;
+                    }
+
+                    ConfiguracionPartidaPrototype partidaRapida = registro.obtener(claveRapida);
+                    System.out.println("\n  Partida creada (clon del prototipo):");
+                    partidaRapida.mostrarInfo();
+                    System.out.println("  Buscando jugadores...");
+                    System.out.println("  (Modulo en desarrollo - se ampliara con nuevos patrones)");
+                    break;
+                case "3":
+                    System.out.println("\n  Selecciona el modo base:");
+                    System.out.println("  1. Duelo (1 vs 1)");
+                    System.out.println("  2. Equipos (3v3)");
+                    System.out.println("  3. Battle Royale");
+                    System.out.print("  Opcion: ");
+                    String modoBase = scanner.nextLine().trim();
+
+                    String claveBase;
+                    switch (modoBase) {
+                        case "1": claveBase = "Duelo"; break;
+                        case "2": claveBase = "Equipos"; break;
+                        case "3": claveBase = "BattleRoyale"; break;
+                        default:
+                            System.out.println("  Modo no valido.");
+                            continue;
+                    }
+
+                    ConfiguracionPartidaPrototype partidaCustom = registro.obtener(claveBase);
+
+                    System.out.print("  Max jugadores (actual: entre para mantener): ");
+                    String inputJugadores = scanner.nextLine().trim();
+                    if (!inputJugadores.isEmpty()) {
+                        try {
+                            partidaCustom.setMaxJugadores(Integer.parseInt(inputJugadores));
+                        } catch (NumberFormatException e) {
+                            System.out.println("  Valor no valido, se mantiene el original.");
+                        }
+                    }
+
+                    System.out.print("  Duracion en minutos (actual: entre para mantener): ");
+                    String inputDuracion = scanner.nextLine().trim();
+                    if (!inputDuracion.isEmpty()) {
+                        try {
+                            partidaCustom.setDuracionMinutos(Integer.parseInt(inputDuracion));
+                        } catch (NumberFormatException e) {
+                            System.out.println("  Valor no valido, se mantiene el original.");
+                        }
+                    }
+
+                    System.out.println("\n  Partida personalizada creada (clon modificado):");
+                    partidaCustom.mostrarInfo();
+                    System.out.println("  Buscando jugadores...");
+                    System.out.println("  (Modulo en desarrollo - se ampliara con nuevos patrones)");
+                    break;
+                case "0":
+                    enMenu = false;
+                    break;
+                default:
+                    System.out.println("  Opcion no valida.");
             }
         }
     }

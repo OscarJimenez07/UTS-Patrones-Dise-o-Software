@@ -1,0 +1,85 @@
+@startuml Prototype
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam style strictuml
+
+title Patrón Prototype — Configuraciones de Partida
+
+' ── Prototype ──
+
+interface ConfiguracionPartidaPrototype {
+    + clonar() : ConfiguracionPartidaPrototype
+    + mostrarInfo() : void
+    + getModo() : String
+    + setMaxJugadores(maxJugadores) : void
+    + setDuracionMinutos(duracionMinutos) : void
+}
+
+' ── Concrete Prototypes ──
+
+class ConfiguracionDuelo {
+    - modo : String
+    - maxJugadores : int
+    - duracionMinutos : int
+    - mapa : String
+    - rankedPermitido : boolean
+    - reconexionPermitida : boolean
+    + clonar() : ConfiguracionPartidaPrototype
+    + mostrarInfo() : void
+    + getModo() : String
+    + setMaxJugadores(maxJugadores) : void
+    + setDuracionMinutos(duracionMinutos) : void
+}
+
+class ConfiguracionEquipos {
+    - modo : String
+    - maxJugadores : int
+    - duracionMinutos : int
+    - mapa : String
+    - rankedPermitido : boolean
+    - reconexionPermitida : boolean
+    + clonar() : ConfiguracionPartidaPrototype
+    + mostrarInfo() : void
+    + getModo() : String
+    + setMaxJugadores(maxJugadores) : void
+    + setDuracionMinutos(duracionMinutos) : void
+}
+
+class ConfiguracionBattleRoyale {
+    - modo : String
+    - maxJugadores : int
+    - duracionMinutos : int
+    - mapa : String
+    - rankedPermitido : boolean
+    - reconexionPermitida : boolean
+    + clonar() : ConfiguracionPartidaPrototype
+    + mostrarInfo() : void
+    + getModo() : String
+    + setMaxJugadores(maxJugadores) : void
+    + setDuracionMinutos(duracionMinutos) : void
+}
+
+' ── Registry ──
+
+class RegistroConfiguraciones {
+    - prototipos : Map<String, ConfiguracionPartidaPrototype>
+    + registrar(clave, prototipo) : void
+    + obtener(clave) : ConfiguracionPartidaPrototype
+    + listarConfiguraciones() : void
+}
+
+' ── Relaciones de herencia ──
+
+ConfiguracionPartidaPrototype <|.. ConfiguracionDuelo
+ConfiguracionPartidaPrototype <|.. ConfiguracionEquipos
+ConfiguracionPartidaPrototype <|.. ConfiguracionBattleRoyale
+
+' ── Relaciones de uso ──
+
+RegistroConfiguraciones o--> ConfiguracionPartidaPrototype : almacena
+RegistroConfiguraciones ..> ConfiguracionDuelo : <<clones>>
+RegistroConfiguraciones ..> ConfiguracionEquipos : <<clones>>
+RegistroConfiguraciones ..> ConfiguracionBattleRoyale : <<clones>>
+
+@enduml

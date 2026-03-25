@@ -44,7 +44,8 @@ class DashboardJugador extends Dashboard {
         System.out.println("  2. Ver mis estadisticas");
         System.out.println("  3. Tienda de objetos");
         System.out.println("  4. Ver ranking global");
-        System.out.println("  5. Cerrar sesion");
+        System.out.println("  5. Crear partida personalizada");
+        System.out.println("  6. Cerrar sesion");
         System.out.println("========================================");
     }
 }

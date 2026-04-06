@@ -118,6 +118,9 @@ public class Main {
                     menuCrearPartida();
                     break;
                 case "6":
+                    menuNotificaciones();
+                    break;
+                case "7":
                     enSesion = false;
                     usuarioActual = null;
                     System.out.println("\n  Sesion cerrada.");
@@ -391,6 +394,59 @@ public class Main {
                     break;
                 case "0":
                     enTienda = false;
+                    break;
+                default:
+                    System.out.println("  Opcion no valida.");
+            }
+        }
+    }
+
+    // ========================================================
+    //  NOTIFICACIONES (usa patron Adapter)
+    // ========================================================
+    private static void menuNotificaciones() {
+        boolean enMenu = true;
+
+        while (enMenu) {
+            System.out.println("\n  ╔══════════════════════════════════════╗");
+            System.out.println("  ║      NOTIFICACIONES (Adapter)        ║");
+            System.out.println("  ╠══════════════════════════════════════╣");
+            System.out.println("  ║  1. Enviar alerta por Discord        ║");
+            System.out.println("  ║  2. Enviar alerta por Correo         ║");
+            System.out.println("  ║  3. Simular resultado por Discord    ║");
+            System.out.println("  ║  4. Simular resultado por Correo     ║");
+            System.out.println("  ║  0. Volver al menu                   ║");
+            System.out.println("  ╚══════════════════════════════════════╝");
+            System.out.print("  Opcion: ");
+            String op = scanner.nextLine().trim();
+
+            NotificacionJuego notificacion;
+
+            switch (op) {
+                case "1":
+                    notificacion = new AdaptadorDiscord(new ServicioDiscord());
+                    System.out.print("  Mensaje de alerta: ");
+                    String alertaDiscord = scanner.nextLine().trim();
+                    notificacion.enviarAlerta(usuarioActual, alertaDiscord);
+                    break;
+                case "2":
+                    notificacion = new AdaptadorCorreo(new ServicioCorreo());
+                    System.out.print("  Mensaje de alerta: ");
+                    String alertaCorreo = scanner.nextLine().trim();
+                    notificacion.enviarAlerta(usuarioActual, alertaCorreo);
+                    break;
+                case "3":
+                    notificacion = new AdaptadorDiscord(new ServicioDiscord());
+                    System.out.println("  Simulando resultado de partida...");
+                    notificacion.enviarResultadoPartida(usuarioActual, "Equipos 3v3", true);
+                    break;
+                case "4":
+                    notificacion = new AdaptadorCorreo(new ServicioCorreo());
+                    System.out.println("  Simulando resultado de partida...");
+                    notificacion.enviarResultadoPartida(usuarioActual, "Battle Royale", false);
+                    break;
+                case "0":
+                    enMenu = false;
                     break;
                 default:
                     System.out.println("  Opcion no valida.");

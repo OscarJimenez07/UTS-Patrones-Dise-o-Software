@@ -1,0 +1,65 @@
+@startuml Adapter
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam style strictuml
+
+title Patron Adapter — Sistema de Notificaciones
+
+' ── Target ──
+
+interface NotificacionJuego {
+    + enviarAlerta(jugador, mensaje) : void
+    + enviarResultadoPartida(jugador, modo, victoria) : void
+}
+
+' ── Adaptees ──
+
+class ServicioDiscord {
+    + publicarMensaje(canal, contenido, esMencion) : void
+}
+
+class ServicioCorreo {
+    + enviarEmail(destinatario, asunto, cuerpo) : void
+}
+
+' ── Adapters ──
+
+class AdaptadorDiscord {
+    - discord : ServicioDiscord
+    + enviarAlerta(jugador, mensaje) : void
+    + enviarResultadoPartida(jugador, modo, victoria) : void
+}
+
+class AdaptadorCorreo {
+    - correo : ServicioCorreo
+    + enviarAlerta(jugador, mensaje) : void
+    + enviarResultadoPartida(jugador, modo, victoria) : void
+}
+
+' ── Relaciones ──
+
+NotificacionJuego <|.. AdaptadorDiscord
+NotificacionJuego <|.. AdaptadorCorreo
+
+AdaptadorDiscord o--> ServicioDiscord : adapta
+AdaptadorCorreo o--> ServicioCorreo : adapta
+
+' ── Nota ──
+
+note bottom of NotificacionJuego
+  Target: interfaz que el motor
+  de juegos espera utilizar
+end note
+
+note bottom of ServicioDiscord
+  Adaptee: servicio externo
+  con interfaz incompatible
+end note
+
+note bottom of ServicioCorreo
+  Adaptee: servicio externo
+  con interfaz incompatible
+end note
+
+@enduml

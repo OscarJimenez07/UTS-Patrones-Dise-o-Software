@@ -121,6 +121,9 @@ public class Main {
                     menuNotificaciones();
                     break;
                 case "7":
+                    menuMejoras();
+                    break;
+                case "8":
                     enSesion = false;
                     usuarioActual = null;
                     System.out.println("\n  Sesion cerrada.");
@@ -452,6 +455,133 @@ public class Main {
                     System.out.println("  Opcion no valida.");
             }
         }
+    }
+
+    // ========================================================
+    //  MEJORAS DE HABILIDADES (usa patron Decorator)
+    // ========================================================
+    private static void menuMejoras() {
+        boolean enMenu = true;
+
+        while (enMenu) {
+            System.out.println("\n  ╔══════════════════════════════════════╗");
+            System.out.println("  ║   MEJORAS DE HABILIDADES (Decorator) ║");
+            System.out.println("  ╠══════════════════════════════════════╣");
+            System.out.println("  ║  1. Mejorar habilidad paso a paso    ║");
+            System.out.println("  ║  2. Ver ejemplo de habilidad maxima  ║");
+            System.out.println("  ║  0. Volver al menu                   ║");
+            System.out.println("  ╚══════════════════════════════════════╝");
+            System.out.print("  Opcion: ");
+            String op = scanner.nextLine().trim();
+
+            switch (op) {
+                case "1":
+                    mejorarHabilidad();
+                    break;
+                case "2":
+                    mostrarHabilidadMaxima();
+                    break;
+                case "0":
+                    enMenu = false;
+                    break;
+                default:
+                    System.out.println("  Opcion no valida.");
+            }
+        }
+    }
+
+    private static void mejorarHabilidad() {
+        System.out.println("\n  Elige la habilidad base:");
+        System.out.println("  1. Golpe Fisico     (25 dano)");
+        System.out.println("  2. Disparo Magico   (40 dano)");
+        System.out.println("  3. Hechizo Curativo (10 dano)");
+        System.out.print("  Opcion: ");
+        String opBase = scanner.nextLine().trim();
+
+        HabilidadPersonaje habilidad;
+        switch (opBase) {
+            case "1": habilidad = new GolpeFisico(); break;
+            case "2": habilidad = new DisparoMagico(); break;
+            case "3": habilidad = new HechizoCurativo(); break;
+            default:
+                System.out.println("  Habilidad no valida.");
+                return;
+        }
+
+        System.out.println("\n  Habilidad base: " + habilidad.getDescripcion()
+                + " [" + habilidad.getDano() + " dano]");
+
+        boolean aplicando = true;
+        while (aplicando) {
+            System.out.println("\n  Aplica una mejora (se apilan):");
+            System.out.println("  1. Dano de Fuego      (+15 dano)");
+            System.out.println("  2. Veneno             (+10 dano por turno)");
+            System.out.println("  3. Area de Efecto     (+8 dano en area)");
+            System.out.println("  4. Robo de Vida       (+5 dano, recupera HP)");
+            System.out.println("  0. Ejecutar habilidad!");
+            System.out.print("  Opcion: ");
+            String opMejora = scanner.nextLine().trim();
+
+            switch (opMejora) {
+                case "1":
+                    habilidad = new MejoraDanoFuego(habilidad);
+                    System.out.println("  Mejora aplicada: " + habilidad.getDescripcion());
+                    break;
+                case "2":
+                    habilidad = new MejoraVeneno(habilidad);
+                    System.out.println("  Mejora aplicada: " + habilidad.getDescripcion());
+                    break;
+                case "3":
+                    habilidad = new MejoraAreaEfecto(habilidad);
+                    System.out.println("  Mejora aplicada: " + habilidad.getDescripcion());
+                    break;
+                case "4":
+                    habilidad = new MejoraRoboVida(habilidad);
+                    System.out.println("  Mejora aplicada: " + habilidad.getDescripcion());
+                    break;
+                case "0":
+                    aplicando = false;
+                    break;
+                default:
+                    System.out.println("  Opcion no valida.");
+            }
+        }
+
+        System.out.println("\n  ═══ EJECUCION DE HABILIDAD ═══");
+        System.out.println("  Habilidad final: " + habilidad.getDescripcion());
+        System.out.println("  Dano total: " + habilidad.getDano());
+        System.out.println();
+        habilidad.ejecutar();
+        System.out.println("\n  ═══════════════════════════════");
+    }
+
+    private static void mostrarHabilidadMaxima() {
+        System.out.println("\n  ═══ EJEMPLO: HABILIDAD CON TODAS LAS MEJORAS ═══");
+
+        HabilidadPersonaje habilidad = new DisparoMagico();
+        System.out.println("  Base: " + habilidad.getDescripcion()
+                + " [" + habilidad.getDano() + " dano]");
+
+        habilidad = new MejoraDanoFuego(habilidad);
+        System.out.println("  + Fuego:        " + habilidad.getDescripcion()
+                + " [" + habilidad.getDano() + " dano]");
+
+        habilidad = new MejoraVeneno(habilidad);
+        System.out.println("  + Veneno:       " + habilidad.getDescripcion()
+                + " [" + habilidad.getDano() + " dano]");
+
+        habilidad = new MejoraAreaEfecto(habilidad);
+        System.out.println("  + Area:         " + habilidad.getDescripcion()
+                + " [" + habilidad.getDano() + " dano]");
+
+        habilidad = new MejoraRoboVida(habilidad);
+        System.out.println("  + Robo de Vida: " + habilidad.getDescripcion()
+                + " [" + habilidad.getDano() + " dano]");
+
+        System.out.println("\n  Ejecutando habilidad completa:");
+        habilidad.ejecutar();
+        System.out.println("\n  Dano total acumulado: " + habilidad.getDano());
+        System.out.println("  ═════════════════════════════════════════════════");
     }
 
     // ========================================================

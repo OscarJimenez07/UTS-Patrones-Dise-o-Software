@@ -1,0 +1,102 @@
+@startuml Decorator
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam style strictuml
+
+title Patron Decorator — Sistema de Mejoras de Habilidades
+
+' ── Component ──
+
+interface HabilidadPersonaje {
+    + ejecutar() : void
+    + getDescripcion() : String
+    + getDano() : int
+}
+
+' ── Concrete Components ──
+
+class GolpeFisico {
+    + ejecutar() : void
+    + getDescripcion() : String
+    + getDano() : int
+}
+
+class DisparoMagico {
+    + ejecutar() : void
+    + getDescripcion() : String
+    + getDano() : int
+}
+
+class HechizoCurativo {
+    + ejecutar() : void
+    + getDescripcion() : String
+    + getDano() : int
+}
+
+' ── Decorator (abstracto) ──
+
+abstract class MejoraHabilidad {
+    # habilidadBase : HabilidadPersonaje
+    + ejecutar() : void
+    + getDescripcion() : String
+    + getDano() : int
+}
+
+' ── Concrete Decorators ──
+
+class MejoraDanoFuego {
+    - DANO_FUEGO : int = 15
+    + ejecutar() : void
+    + getDescripcion() : String
+    + getDano() : int
+}
+
+class MejoraVeneno {
+    - DANO_VENENO : int = 10
+    + ejecutar() : void
+    + getDescripcion() : String
+    + getDano() : int
+}
+
+class MejoraAreaEfecto {
+    - DANO_AREA : int = 8
+    + ejecutar() : void
+    + getDescripcion() : String
+    + getDano() : int
+}
+
+class MejoraRoboVida {
+    - DANO_EXTRA : int = 5
+    + ejecutar() : void
+    + getDescripcion() : String
+    + getDano() : int
+}
+
+' ── Relaciones ──
+
+HabilidadPersonaje <|.. GolpeFisico
+HabilidadPersonaje <|.. DisparoMagico
+HabilidadPersonaje <|.. HechizoCurativo
+HabilidadPersonaje <|.. MejoraHabilidad
+
+MejoraHabilidad <|-- MejoraDanoFuego
+MejoraHabilidad <|-- MejoraVeneno
+MejoraHabilidad <|-- MejoraAreaEfecto
+MejoraHabilidad <|-- MejoraRoboVida
+
+MejoraHabilidad o--> HabilidadPersonaje : decora
+
+' ── Notas ──
+
+note bottom of HabilidadPersonaje
+  Component: interfaz base
+  de toda habilidad
+end note
+
+note bottom of MejoraHabilidad
+  Decorator: envuelve una habilidad
+  y anade comportamiento extra
+end note
+
+@enduml

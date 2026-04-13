@@ -124,6 +124,9 @@ public class Main {
                     menuMejoras();
                     break;
                 case "8":
+                    menuAtaques();
+                    break;
+                case "9":
                     enSesion = false;
                     usuarioActual = null;
                     System.out.println("\n  Sesion cerrada.");
@@ -582,6 +585,110 @@ public class Main {
         habilidad.ejecutar();
         System.out.println("\n  Dano total acumulado: " + habilidad.getDano());
         System.out.println("  ═════════════════════════════════════════════════");
+    }
+
+    // ========================================================
+    //  SISTEMA DE ATAQUES (usa patron Bridge)
+    // ========================================================
+    private static void menuAtaques() {
+        boolean enMenu = true;
+
+        while (enMenu) {
+            System.out.println("\n  ╔══════════════════════════════════════╗");
+            System.out.println("  ║   SISTEMA DE ATAQUES (Bridge)        ║");
+            System.out.println("  ╠══════════════════════════════════════╣");
+            System.out.println("  ║  1. Crear y ejecutar ataque          ║");
+            System.out.println("  ║  2. Ver todas las combinaciones      ║");
+            System.out.println("  ║  0. Volver al menu                   ║");
+            System.out.println("  ╚══════════════════════════════════════╝");
+            System.out.print("  Opcion: ");
+            String op = scanner.nextLine().trim();
+
+            switch (op) {
+                case "1":
+                    crearAtaque();
+                    break;
+                case "2":
+                    mostrarTodasCombinaciones();
+                    break;
+                case "0":
+                    enMenu = false;
+                    break;
+                default:
+                    System.out.println("  Opcion no valida.");
+            }
+        }
+    }
+
+    private static void crearAtaque() {
+        System.out.println("\n  Elige el tipo de ataque:");
+        System.out.println("  1. Cuerpo a Cuerpo  (30 dano base)");
+        System.out.println("  2. Distancia        (22 dano base)");
+        System.out.println("  3. Magico           (35 dano base)");
+        System.out.print("  Opcion: ");
+        String opTipo = scanner.nextLine().trim();
+
+        System.out.println("\n  Elige el elemento:");
+        System.out.println("  1. Fuego      (+20 dano, quemadura)");
+        System.out.println("  2. Hielo      (+12 dano, congelacion)");
+        System.out.println("  3. Electrico  (+18 dano, paralisis)");
+        System.out.print("  Opcion: ");
+        String opElemento = scanner.nextLine().trim();
+
+        ElementoAtaque elemento;
+        switch (opElemento) {
+            case "1": elemento = new ElementoFuego(); break;
+            case "2": elemento = new ElementoHielo(); break;
+            case "3": elemento = new ElementoElectrico(); break;
+            default:
+                System.out.println("  Elemento no valido.");
+                return;
+        }
+
+        AtaquePersonaje ataque;
+        switch (opTipo) {
+            case "1": ataque = new AtaqueCuerpoACuerpo(elemento); break;
+            case "2": ataque = new AtaqueDistancia(elemento); break;
+            case "3": ataque = new AtaqueMagico(elemento); break;
+            default:
+                System.out.println("  Tipo de ataque no valido.");
+                return;
+        }
+
+        System.out.println("\n  ═══ EJECUCION DE ATAQUE ═══");
+        ataque.ejecutarAtaque();
+        System.out.println("  ═════════════════════════════");
+    }
+
+    private static void mostrarTodasCombinaciones() {
+        System.out.println("\n  ═══ TODAS LAS COMBINACIONES (Bridge) ═══");
+        System.out.println("  3 tipos de ataque x 3 elementos = 9 combinaciones");
+        System.out.println("  (sin Bridge necesitarias 9 clases separadas)\n");
+
+        ElementoAtaque[] elementos = {
+            new ElementoFuego(), new ElementoHielo(), new ElementoElectrico()
+        };
+
+        AtaquePersonaje ataque;
+        for (ElementoAtaque elem : elementos) {
+            ataque = new AtaqueCuerpoACuerpo(elem);
+            System.out.println("  > " + ataque.getDescripcion()
+                    + " — Dano: " + ataque.getDanoTotal());
+        }
+        System.out.println();
+        for (ElementoAtaque elem : elementos) {
+            ataque = new AtaqueDistancia(elem);
+            System.out.println("  > " + ataque.getDescripcion()
+                    + " — Dano: " + ataque.getDanoTotal());
+        }
+        System.out.println();
+        for (ElementoAtaque elem : elementos) {
+            ataque = new AtaqueMagico(elem);
+            System.out.println("  > " + ataque.getDescripcion()
+                    + " — Dano: " + ataque.getDanoTotal());
+        }
+
+        System.out.println("\n  ═══════════════════════════════════════════");
     }
 
     // ========================================================

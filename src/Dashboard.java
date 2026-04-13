@@ -47,7 +47,8 @@ class DashboardJugador extends Dashboard {
         System.out.println("  5. Crear partida personalizada");
         System.out.println("  6. Notificaciones");
         System.out.println("  7. Mejorar habilidades");
-        System.out.println("  8. Cerrar sesion");
+        System.out.println("  8. Sistema de ataques");
+        System.out.println("  9. Cerrar sesion");
         System.out.println("========================================");
     }
 }

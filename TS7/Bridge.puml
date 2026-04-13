@@ -1,0 +1,93 @@
+@startuml Bridge
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam style strictuml
+
+title Patron Bridge — Sistema de Ataques por Elemento
+
+' ── Implementor ──
+
+interface ElementoAtaque {
+    + getNombre() : String
+    + getDanoElemento() : int
+    + getEfecto() : String
+}
+
+' ── Concrete Implementors ──
+
+class ElementoFuego {
+    + getNombre() : String
+    + getDanoElemento() : int
+    + getEfecto() : String
+}
+
+class ElementoHielo {
+    + getNombre() : String
+    + getDanoElemento() : int
+    + getEfecto() : String
+}
+
+class ElementoElectrico {
+    + getNombre() : String
+    + getDanoElemento() : int
+    + getEfecto() : String
+}
+
+' ── Abstraction ──
+
+abstract class AtaquePersonaje {
+    # elemento : ElementoAtaque
+    + ejecutarAtaque() : void
+    + getDescripcion() : String
+    + getDanoTotal() : int
+    + {abstract} getTipoAtaque() : String
+    + {abstract} getDanoBase() : int
+}
+
+' ── Refined Abstractions ──
+
+class AtaqueCuerpoACuerpo {
+    + getTipoAtaque() : String
+    + getDanoBase() : int
+    + ejecutarAtaque() : void
+}
+
+class AtaqueDistancia {
+    + getTipoAtaque() : String
+    + getDanoBase() : int
+    + ejecutarAtaque() : void
+}
+
+class AtaqueMagico {
+    + getTipoAtaque() : String
+    + getDanoBase() : int
+    + ejecutarAtaque() : void
+}
+
+' ── Relaciones ──
+
+ElementoAtaque <|.. ElementoFuego
+ElementoAtaque <|.. ElementoHielo
+ElementoAtaque <|.. ElementoElectrico
+
+AtaquePersonaje <|-- AtaqueCuerpoACuerpo
+AtaquePersonaje <|-- AtaqueDistancia
+AtaquePersonaje <|-- AtaqueMagico
+
+AtaquePersonaje o--> ElementoAtaque : usa (puente)
+
+' ── Notas ──
+
+note bottom of ElementoAtaque
+  Implementor: define el
+  comportamiento del elemento
+end note
+
+note bottom of AtaquePersonaje
+  Abstraction: define el tipo
+  de ataque y delega el elemento
+  al implementor via el "puente"
+end note
+
+@enduml

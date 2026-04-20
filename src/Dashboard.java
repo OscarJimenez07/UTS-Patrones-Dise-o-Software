@@ -48,7 +48,8 @@ class DashboardJugador extends Dashboard {
         System.out.println("  6. Notificaciones");
         System.out.println("  7. Mejorar habilidades");
         System.out.println("  8. Sistema de ataques");
-        System.out.println("  9. Cerrar sesion");
+        System.out.println("  9. Clanes y escuadrones");
+        System.out.println(" 10. Cerrar sesion");
         System.out.println("========================================");
     }
 }

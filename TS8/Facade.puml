@@ -1,0 +1,89 @@
+@startuml Facade
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam style strictuml
+
+title Patron Facade — Fachada del flujo "Iniciar Partida"
+
+' ── Facade ──
+
+class FachadaPartida {
+    - auth : SistemaAutenticacion
+    - registroConfigs : RegistroConfiguraciones
+    - notificador : NotificacionJuego
+    + iniciarPartidaRapida(usuario : String, claveModo : String) : void
+    + reportarResultado(usuario : String, modo : String, victoria : boolean) : void
+    + usarNotificador(n : NotificacionJuego) : void
+    - verificarSesion(usuario : String) : boolean
+    - buscarJugadores(modo : String) : void
+}
+
+' ── Subsistemas ──
+
+package "Subsistema: Autenticacion" {
+    class SistemaAutenticacion <<Singleton>> {
+        + getInstance() : SistemaAutenticacion
+        + obtenerRol(usuario : String) : String
+    }
+}
+
+package "Subsistema: Configuracion de Partida (Prototype)" {
+    class RegistroConfiguraciones {
+        + registrar(clave : String, p : ConfiguracionPartidaPrototype) : void
+        + obtener(clave : String) : ConfiguracionPartidaPrototype
+    }
+    interface ConfiguracionPartidaPrototype {
+        + clonar() : ConfiguracionPartidaPrototype
+        + mostrarInfo() : void
+    }
+    class ConfiguracionDuelo
+    class ConfiguracionEquipos
+    class ConfiguracionBattleRoyale
+    ConfiguracionPartidaPrototype <|.. ConfiguracionDuelo
+    ConfiguracionPartidaPrototype <|.. ConfiguracionEquipos
+    ConfiguracionPartidaPrototype <|.. ConfiguracionBattleRoyale
+    RegistroConfiguraciones o--> ConfiguracionPartidaPrototype
+}
+
+package "Subsistema: Notificaciones (Adapter)" {
+    interface NotificacionJuego {
+        + enviarAlerta(jugador : String, mensaje : String) : void
+        + enviarResultadoPartida(jugador : String, modo : String, victoria : boolean) : void
+    }
+    class AdaptadorDiscord
+    class AdaptadorCorreo
+    NotificacionJuego <|.. AdaptadorDiscord
+    NotificacionJuego <|.. AdaptadorCorreo
+}
+
+' ── Cliente ──
+
+class Main <<client>> {
+    + buscarPartida() : void
+}
+
+' ── Relaciones ──
+
+Main --> FachadaPartida : usa (unica puerta)
+
+FachadaPartida --> SistemaAutenticacion
+FachadaPartida --> RegistroConfiguraciones
+FachadaPartida --> NotificacionJuego
+
+' ── Notas ──
+
+note right of FachadaPartida
+  Facade: expone un metodo simple
+  (iniciarPartidaRapida) que coordina
+  varios subsistemas complejos.
+  El cliente no conoce los detalles.
+end note
+
+note bottom of Main
+  Antes: el cliente tenia que orquestar
+  Singleton + Prototype + Adapter + matchmaking.
+  Ahora: una sola llamada a la fachada.
+end note
+
+@enduml

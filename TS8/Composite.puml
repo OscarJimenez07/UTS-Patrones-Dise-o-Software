@@ -1,0 +1,82 @@
+@startuml Composite
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam style strictuml
+
+title Patron Composite — Sistema de Clanes y Escuadrones
+
+' ── Component ──
+
+interface MiembroClan {
+    + getNombre() : String
+    + getPoder() : int
+    + contarMiembros() : int
+    + recibirMensaje(mensaje : String) : void
+    + mostrar(nivel : int) : void
+}
+
+' ── Leaf ──
+
+class JugadorClan {
+    - nombre : String
+    - poder : int
+    - rol : String
+    + getNombre() : String
+    + getPoder() : int
+    + contarMiembros() : int
+    + recibirMensaje(mensaje : String) : void
+    + mostrar(nivel : int) : void
+}
+
+' ── Composite ──
+
+class Escuadron {
+    - nombre : String
+    - miembros : List<MiembroClan>
+    + agregar(m : MiembroClan) : void
+    + remover(m : MiembroClan) : void
+    + getNombre() : String
+    + getPoder() : int
+    + contarMiembros() : int
+    + recibirMensaje(mensaje : String) : void
+    + mostrar(nivel : int) : void
+}
+
+' ── Cliente ──
+
+class Main <<client>> {
+    + menuClanes() : void
+}
+
+' ── Relaciones ──
+
+MiembroClan <|.. JugadorClan
+MiembroClan <|.. Escuadron
+
+Escuadron o--> "0..*" MiembroClan : contiene
+
+Main ..> MiembroClan : usa (uniforme)
+
+' ── Notas ──
+
+note right of MiembroClan
+  Component: contrato comun
+  para hojas y composites.
+  El cliente los trata igual.
+end note
+
+note bottom of Escuadron
+  Composite: delega cada
+  operacion a sus hijos.
+  Un mensaje al clan llega
+  a todos los miembros.
+end note
+
+note bottom of JugadorClan
+  Leaf: no tiene hijos.
+  Las operaciones devuelven
+  su propio valor.
+end note
+
+@enduml

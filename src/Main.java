@@ -127,6 +127,9 @@ public class Main {
                     menuAtaques();
                     break;
                 case "9":
+                    menuClanes();
+                    break;
+                case "10":
                     enSesion = false;
                     usuarioActual = null;
                     System.out.println("\n  Sesion cerrada.");
@@ -692,10 +695,10 @@ public class Main {
     }
 
     // ========================================================
-    //  BUSCAR PARTIDA (simulado, se ampliara con Strategy)
+    //  BUSCAR PARTIDA (usa patron Facade)
     // ========================================================
     private static void buscarPartida() {
-        System.out.println("\n  ═══ BUSCAR PARTIDA ═══");
+        System.out.println("\n  ═══ BUSCAR PARTIDA (Facade) ═══");
         System.out.println("  Selecciona modo de juego:");
         System.out.println("  1. 1 vs 1");
         System.out.println("  2. Equipos (3v3)");
@@ -703,19 +706,163 @@ public class Main {
         System.out.print("  Opcion: ");
         String modo = scanner.nextLine().trim();
 
-        String nombreModo;
+        String claveModo;
         switch (modo) {
-            case "1": nombreModo = "1 vs 1"; break;
-            case "2": nombreModo = "Equipos 3v3"; break;
-            case "3": nombreModo = "Battle Royale"; break;
+            case "1": claveModo = "Duelo"; break;
+            case "2": claveModo = "Equipos"; break;
+            case "3": claveModo = "BattleRoyale"; break;
             default:
                 System.out.println("  Modo no valido.");
                 return;
         }
 
-        System.out.println("\n  Buscando partida de " + nombreModo + "...");
-        System.out.println("  Jugadores encontrados! Entrando a la partida...");
-        System.out.println("  (Modulo en desarrollo - se ampliara con nuevos patrones)");
+        System.out.println("\n  Elige el canal de notificacion:");
+        System.out.println("  1. Discord");
+        System.out.println("  2. Correo");
+        System.out.print("  Opcion: ");
+        String canal = scanner.nextLine().trim();
+
+        // La fachada unifica autenticacion + prototype + matchmaking + adapter.
+        FachadaPartida fachada = new FachadaPartida();
+        if (canal.equals("2")) {
+            fachada.usarNotificador(new AdaptadorCorreo(new ServicioCorreo()));
+        }
+        fachada.iniciarPartidaRapida(usuarioActual, claveModo);
+    }
+
+    // ========================================================
+    //  SISTEMA DE CLANES (usa patron Composite)
+    // ========================================================
+    private static Escuadron clanActual;
+    private static Escuadron escuadronAsalto;
+    private static Escuadron escuadronSoporte;
+
+    private static void menuClanes() {
+        if (clanActual == null) {
+            construirClanDemo();
+        }
+
+        boolean enMenu = true;
+        while (enMenu) {
+            System.out.println("\n  ╔══════════════════════════════════════╗");
+            System.out.println("  ║     CLANES Y ESCUADRONES (Composite) ║");
+            System.out.println("  ╠══════════════════════════════════════╣");
+            System.out.println("  ║  1. Ver jerarquia del clan           ║");
+            System.out.println("  ║  2. Enviar mensaje a todo el clan    ║");
+            System.out.println("  ║  3. Enviar mensaje a un escuadron    ║");
+            System.out.println("  ║  4. Ver poder total del clan         ║");
+            System.out.println("  ║  5. Agregar jugador a un escuadron   ║");
+            System.out.println("  ║  0. Volver al menu                   ║");
+            System.out.println("  ╚══════════════════════════════════════╝");
+            System.out.print("  Opcion: ");
+            String op = scanner.nextLine().trim();
+
+            switch (op) {
+                case "1":
+                    System.out.println("\n  ═══ JERARQUIA DEL CLAN ═══");
+                    clanActual.mostrar(0);
+                    System.out.println("  ══════════════════════════");
+                    break;
+                case "2":
+                    System.out.print("  Mensaje del lider: ");
+                    String msg = scanner.nextLine().trim();
+                    System.out.println();
+                    clanActual.recibirMensaje(msg);
+                    break;
+                case "3":
+                    Escuadron sub = pedirEscuadron();
+                    if (sub != null) {
+                        System.out.print("  Mensaje para el escuadron: ");
+                        String msgSub = scanner.nextLine().trim();
+                        System.out.println();
+                        sub.recibirMensaje(msgSub);
+                    }
+                    break;
+                case "4":
+                    System.out.println("\n  Poder total del clan \"" + clanActual.getNombre() + "\": "
+                            + clanActual.getPoder());
+                    System.out.println("  Miembros totales: " + clanActual.contarMiembros());
+                    break;
+                case "5":
+                    agregarJugador();
+                    break;
+                case "0":
+                    enMenu = false;
+                    break;
+                default:
+                    System.out.println("  Opcion no valida.");
+            }
+        }
+    }
+
+    private static void construirClanDemo() {
+        // Composite: clan raiz que contiene escuadrones, que a su vez
+        // contienen jugadores (hojas). Demuestra jerarquia anidada.
+        clanActual = new Escuadron("Dragones de Acero");
+
+        escuadronAsalto = new Escuadron("Escuadron Asalto");
+        escuadronAsalto.agregar(new JugadorClan("oscar", 1250, "Lider"));
+        escuadronAsalto.agregar(new JugadorClan("anderson", 1180, "Oficial"));
+        escuadronAsalto.agregar(new JugadorClan("proGamer99", 2150, "Miembro"));
+
+        escuadronSoporte = new Escuadron("Escuadron Soporte");
+        escuadronSoporte.agregar(new JugadorClan("shadowKnight", 1980, "Miembro"));
+        escuadronSoporte.agregar(new JugadorClan("dragonSlayer", 1875, "Miembro"));
+
+        clanActual.agregar(escuadronAsalto);
+        clanActual.agregar(escuadronSoporte);
+        clanActual.agregar(new JugadorClan(usuarioActual, 1000, "Recluta"));
+    }
+
+    private static Escuadron pedirEscuadron() {
+        System.out.println("\n  Elige el escuadron:");
+        System.out.println("  1. Escuadron Asalto");
+        System.out.println("  2. Escuadron Soporte");
+        System.out.print("  Opcion: ");
+        String op = scanner.nextLine().trim();
+        switch (op) {
+            case "1": return escuadronAsalto;
+            case "2": return escuadronSoporte;
+            default:
+                System.out.println("  Opcion no valida.");
+                return null;
+        }
+    }
+
+    private static void agregarJugador() {
+        System.out.print("\n  Nombre del nuevo jugador: ");
+        String nombre = scanner.nextLine().trim();
+        System.out.print("  Poder (numero entero): ");
+        int poder;
+        try {
+            poder = Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("  Poder invalido.");
+            return;
+        }
+        System.out.println("  A que escuadron lo agregas?");
+        System.out.println("  1. Escuadron Asalto");
+        System.out.println("  2. Escuadron Soporte");
+        System.out.println("  3. Directamente al clan");
+        System.out.print("  Opcion: ");
+        String op = scanner.nextLine().trim();
+
+        JugadorClan nuevo = new JugadorClan(nombre, poder, "Miembro");
+        switch (op) {
+            case "1":
+                escuadronAsalto.agregar(nuevo);
+                break;
+            case "2":
+                escuadronSoporte.agregar(nuevo);
+                break;
+            case "3":
+                clanActual.agregar(nuevo);
+                break;
+            default:
+                System.out.println("  Opcion no valida.");
+                return;
+        }
+        System.out.println("  Jugador '" + nombre + "' agregado.");
     }
 
     // ========================================================

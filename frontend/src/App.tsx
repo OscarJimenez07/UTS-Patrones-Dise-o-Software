@@ -8,6 +8,11 @@ import { NotificacionesPage } from '@/pages/NotificacionesPage'
 import { MejorasPage } from '@/pages/MejorasPage'
 import { AtaquesPage } from '@/pages/AtaquesPage'
 import { ClanPage } from '@/pages/ClanPage'
+import { HistorialPage } from '@/pages/HistorialPage'
+import { LogrosPage } from '@/pages/LogrosPage'
+import { RankingPage } from '@/pages/RankingPage'
+import { ChatPage } from '@/pages/ChatPage'
+import { MisionesPage } from '@/pages/MisionesPage'
 import { AdminPage } from '@/pages/AdminPage'
 import { ModPage } from '@/pages/ModPage'
 import { auth } from '@/lib/auth'
@@ -32,6 +37,11 @@ export default function App() {
         <Route path="/mejoras" element={<MejorasPage />} />
         <Route path="/ataques" element={<AtaquesPage />} />
         <Route path="/clan" element={<ClanPage />} />
+        <Route path="/historial" element={<HistorialPage />} />
+        <Route path="/logros" element={<LogrosPage />} />
+        <Route path="/ranking" element={<RankingPage />} />
+        <Route path="/chat" element={<ChatPage />} />
+        <Route path="/misiones" element={<MisionesPage />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/mod" element={<ModPage />} />
       </Route>

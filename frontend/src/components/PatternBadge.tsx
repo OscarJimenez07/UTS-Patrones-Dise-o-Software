@@ -10,6 +10,11 @@ const PATTERN_STYLES: Record<string, string> = {
   Decorator: 'border-rose-400/40 bg-rose-400/10 text-rose-300',
   Bridge: 'border-sky-400/40 bg-sky-400/10 text-sky-300',
   Composite: 'border-lime-400/40 bg-lime-400/10 text-lime-300',
+  Memento: 'border-indigo-400/40 bg-indigo-400/10 text-indigo-300',
+  Observer: 'border-orange-400/40 bg-orange-400/10 text-orange-300',
+  Strategy: 'border-teal-400/40 bg-teal-400/10 text-teal-300',
+  Mediator: 'border-pink-400/40 bg-pink-400/10 text-pink-300',
+  State: 'border-yellow-400/40 bg-yellow-400/10 text-yellow-300',
 }
 
 export function PatternBadge({

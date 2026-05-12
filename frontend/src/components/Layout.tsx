@@ -11,6 +11,11 @@ import {
   Users,
   Shield,
   Wrench,
+  History,
+  Award,
+  Crown,
+  MessageSquare,
+  Target,
 } from 'lucide-react'
 import { cn } from '@/lib/cn'
 
@@ -29,6 +34,11 @@ const NAV: NavItem[] = [
   { to: '/mejoras', label: 'Mejoras', icon: Sparkles, roles: ['jugador'] },
   { to: '/ataques', label: 'Ataques', icon: Swords, roles: ['jugador'] },
   { to: '/clan', label: 'Clan', icon: Users, roles: ['jugador'] },
+  { to: '/historial', label: 'Historial', icon: History, roles: ['jugador'] },
+  { to: '/logros', label: 'Logros', icon: Award, roles: ['jugador'] },
+  { to: '/ranking', label: 'Ranking', icon: Crown, roles: ['jugador'] },
+  { to: '/chat', label: 'Chat', icon: MessageSquare, roles: ['jugador'] },
+  { to: '/misiones', label: 'Misiones', icon: Target, roles: ['jugador'] },
   { to: '/admin', label: 'Panel admin', icon: Shield, roles: ['administrador'] },
   { to: '/mod', label: 'Panel mod', icon: Wrench, roles: ['moderador'] },
 ]

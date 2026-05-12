@@ -8,6 +8,11 @@ import {
   Swords,
   Users,
   ArrowRight,
+  History,
+  Award,
+  Crown,
+  MessageSquare,
+  Target,
 } from 'lucide-react'
 
 const CARDS = [
@@ -64,6 +69,51 @@ const CARDS = [
     icon: Users,
     grad: 'from-lime-500/20 to-lime-500/5',
     border: 'border-lime-400/20',
+  },
+  {
+    to: '/historial',
+    title: 'Historial',
+    patron: 'Memento',
+    desc: 'Snapshots inmutables de cada partida que pueden restaurarse después.',
+    icon: History,
+    grad: 'from-indigo-500/20 to-indigo-500/5',
+    border: 'border-indigo-400/20',
+  },
+  {
+    to: '/logros',
+    title: 'Logros',
+    patron: 'Observer',
+    desc: 'Eventos del juego notifican a cada logro suscrito, que decide si se desbloquea.',
+    icon: Award,
+    grad: 'from-orange-500/20 to-orange-500/5',
+    border: 'border-orange-400/20',
+  },
+  {
+    to: '/ranking',
+    title: 'Ranking',
+    patron: 'Strategy',
+    desc: 'Cambia la estrategia de ordenamiento (puntos, ELO, victorias, ratio) en vivo.',
+    icon: Crown,
+    grad: 'from-teal-500/20 to-teal-500/5',
+    border: 'border-teal-400/20',
+  },
+  {
+    to: '/chat',
+    title: 'Chat',
+    patron: 'Mediator',
+    desc: 'La sala de chat centraliza la comunicación entre jugadores y canales.',
+    icon: MessageSquare,
+    grad: 'from-pink-500/20 to-pink-500/5',
+    border: 'border-pink-400/20',
+  },
+  {
+    to: '/misiones',
+    title: 'Misiones',
+    patron: 'State',
+    desc: 'Cada misión transita entre estados (Disponible → EnProgreso → Completada → Reclamada).',
+    icon: Target,
+    grad: 'from-yellow-500/20 to-yellow-500/5',
+    border: 'border-yellow-400/20',
   },
 ]
 
